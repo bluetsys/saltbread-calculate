@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>소금빵 6개 기준 재료비 및 원가 계산기</title>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
+    <style>
+        .github-fork-ribbon.right-top:before {
+            background-color: #090;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f4f4f4;
+        }
+
+        .total {
+            font-weight: bold;
+        }
+
+        .section-title {
+            margin-top: 40px;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        input[type="number"] {
+            width: 80px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <a class="github-fork-ribbon right-top" href="https://github.com/bluetsys/saltbread-calculate"
+        data-ribbon="Fork me on GitHub" title="Fork me on GitHub" target="_blank">Fork me on GitHub</a>
+    <h1 style="text-align: center;">소금빵 6개 기준 재료비 및 원가 계산기 <a href="https://10000recipe.com/recipe/6983478"
+            target="_blank" style="font-size:0.7em; vertical-align:middle; margin-left:10px;">출처: 만개의레시피</a></h1>
+    <table>
+        <thead>
+            <tr>
+                <th rowspan="2">재료</th>
+                <th colspan="4">판매</th>
+                <th colspan="4">레시피</th>
+            </tr>
+            <tr>
+                <th>출처</th>
+                <th>단위 수량</th>
+                <th>단위</th>
+                <th>가격 (원)</th>
+                <th>가격 (원/g)</th>
+                <th>기준 양 (g, ml)</th>
+                <th>재료비 (원)</th>
+            </tr>
+        </thead>
+        <tbody id="ingredientTable">
+            <!-- 재료별 계산 정보 동적 추가 -->
+        </tbody>
+        <tfoot>
+            <tr>
+                <td style="text-align: right;" class="total" colspan="7">재료비 (6개)</td>
+                <td style="text-align: right;" id="userTotalCost" class="total">0</td>
+            </tr>
+            <tr>
+                <td style="text-align: right;" class="total" colspan="7">재료비 (1개)</td>
+                <td style="text-align: right;" id="userCostPerItem" class="total">0</td>
+            </tr>
+        </tfoot>
+    </table>
+    <table>
+        <thead>
+            <tr>
+                <th style="text-align: center; width: 12%;">시간당수량</th>
+                <th style="text-align: center; width: 12%;">판매가</th>
+                <th style="text-align: center; width: 12%;">인건비(일)</th>
+                <th style="text-align: center; width: 12%;">월세</th>
+                <th style="text-align: center; width: 12%;">전기요금(월)</th>
+                <th style="text-align: center; width: 12%;">수도요금(월)</th>
+                <th style="text-align: center; width: 12%;">카드수수료</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="text-align: center;"><input type="number" id="quantity" value="40"
+                        onchange="updateUnitPrice()" style="width: 100%; height: 100%;"></td>
+                <td style="text-align: center;"><input type="number" id="unitprice" value="2400"
+                        onchange="updateUnitPrice()" style="width: 100%; height: 100%;"></td>
+                <td style="text-align: center;"><input type="number" id="laborcost" value="160000"
+                        onchange="updateUnitPrice()" style="width: 100%; height: 100%;"></td>
+                <td style="text-align: center;"><input type="number" id="unitmonthlyrent" value="5000000"
+                        onchange="updateUnitPrice()" style="width: 100%; height: 100%;"></td>
+                <td style="text-align: center;"><input type="number" id="unitelectricitybill" value="350000"
+                        onchange="updateUnitPrice()" style="width: 100%; height: 100%;"></td>
+                <td style="text-align: center;"><input type="number" id="unitwaterbill" value="100000"
+                        onchange="updateUnitPrice()" style="width: 100%; height: 100%;"></td>
+                <td style="text-align: center;"><input type="number" id="cardfee" value="0.5"
+                        onchange="updateUnitPrice()" style="width: 100%; height: 100%;"></td>
+            </tr>
+        </tbody>
+    </table>
+    <table>
+        <thead>
+            <tr>
+                <th style="text-align: center; width: 10%;">항목</th>
+                <th style="text-align: center; width: 6%;">비율(원가)</th>
+                <th style="text-align: center; width: 6%;">비율(판매가)</th>
+                <th style="text-align: center; width: 13%;">개당</th>
+                <th style="text-align: center; width: 13%;">시간</th>
+                <th style="text-align: center; width: 13%;">일간(8시간)</th>
+                <th style="text-align: center; width: 13%;">주간(56시간)</th>
+                <th style="text-align: center; width: 13%;">월간</th>
+                <th style="text-align: center; width: 13%;">년간</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <script>
+        const _0x4172db = _0x26f1; (function (_0x42e81d, _0x407363) { const _0x4d0f2d = _0x26f1, _0x4e8160 = _0x42e81d(); while (!![]) { try { const _0x37ac1a = -parseInt(_0x4d0f2d(0x159)) / 0x1 * (parseInt(_0x4d0f2d(0x17b)) / 0x2) + -parseInt(_0x4d0f2d(0x189)) / 0x3 + -parseInt(_0x4d0f2d(0x162)) / 0x4 * (-parseInt(_0x4d0f2d(0x15a)) / 0x5) + parseInt(_0x4d0f2d(0x16b)) / 0x6 * (parseInt(_0x4d0f2d(0x184)) / 0x7) + -parseInt(_0x4d0f2d(0x191)) / 0x8 * (parseInt(_0x4d0f2d(0x177)) / 0x9) + -parseInt(_0x4d0f2d(0x173)) / 0xa + parseInt(_0x4d0f2d(0x17a)) / 0xb; if (_0x37ac1a === _0x407363) break; else _0x4e8160['push'](_0x4e8160['shift']()); } catch (_0x1a1349) { _0x4e8160['push'](_0x4e8160['shift']()); } } }(_0x220c, 0x4aab5)); class CostCalculator { constructor(_0x7330d3, _0xdf1f2b, _0x516d70, _0x22ea06, _0x56926f, _0x4c8976, _0x5b7b76, _0x2b1241) { const _0x32c8a4 = _0x26f1; this['quantity'] = _0x7330d3, this[_0x32c8a4(0x165)] = _0xdf1f2b, this[_0x32c8a4(0x174)] = _0x516d70, this[_0x32c8a4(0x196)] = _0x22ea06, this['monthlyRent'] = _0x56926f, this['electricityBill'] = _0x4c8976, this['waterBill'] = _0x5b7b76, this['cardfee'] = _0x2b1241; } ['cc'](_0x1abf81) { return [_0x1abf81, _0x1abf81 * 0x8, _0x1abf81 * 0x8 * 0x7, _0x1abf81 * 0x8 * 0x1e, _0x1abf81 * 0x8 * 0x16d]; } ['getFixedCost']() { const _0x2122af = _0x26f1; return this[_0x2122af(0x187)] * this['unitmaterial'] + this['laborCost'] + this['monthlyRent'] + this[_0x2122af(0x157)] + this[_0x2122af(0x179)]; } [_0x4172db(0x197)]() { const _0xcaca7f = _0x4172db, _0x4c457b = this['cc'](this[_0xcaca7f(0x187)]), _0x310eae = _0x4c457b[_0xcaca7f(0x158)](_0x7d781f => _0x7d781f * this[_0xcaca7f(0x165)]); return [{ 'label': '수량', 'values': _0x4c457b }, { 'label': _0xcaca7f(0x17f), 'values': this['cc'](this[_0xcaca7f(0x187)])['map'](_0x53adbb => _0x53adbb * this[_0xcaca7f(0x174)]) }, { 'label': _0xcaca7f(0x15f), 'values': this['cc'](this['laborCost']) }, { 'label': '월세', 'values': this['cc'](this['monthlyRent']) }, { 'label': _0xcaca7f(0x16c), 'values': this['cc'](this['electricityBill']) }, { 'label': _0xcaca7f(0x186), 'values': this['cc'](this['waterBill']) }, { 'label': '원가', 'values': this['cc'](this['getFixedCost']()) }, { 'label': _0xcaca7f(0x152), 'values': _0x310eae['map'](_0x2b5707 => _0x2b5707 * this[_0xcaca7f(0x161)]) }, { 'label': '판매가', 'values': _0x310eae }, { 'label': '수익', 'values': _0x310eae[_0xcaca7f(0x158)]((_0x2c530a, _0x46887d) => _0x2c530a - (this['cc'](this[_0xcaca7f(0x15d)]())[_0x46887d] + _0x310eae[_0x46887d] * this['cardfee'])) }]; } } function _0x26f1(_0x47f355, _0x58ffb3) { const _0x220c44 = _0x220c(); return _0x26f1 = function (_0x26f120, _0x3c839a) { _0x26f120 = _0x26f120 - 0x150; let _0x2d3132 = _0x220c44[_0x26f120]; return _0x2d3132; }, _0x26f1(_0x47f355, _0x58ffb3); } const PIECES = 0x6; let totalMaterialCost = 0x0; const numberFormatOptions = { 'minimumFractionDigits': 0x2, 'maximumFractionDigits': 0x2 }, ingredients = [{ 'name': _0x4172db(0x190), 'recipeWeight': 0x96, 'pricePerUnit': 0x548 / 0x3e8, 'sellingUnitValue': 0xa, 'sellingUnit': 'kg', 'sellingPrice': 0x34d0, 'source': _0x4172db(0x18c) }, { 'name': _0x4172db(0x18e), 'recipeWeight': 0x32, 'pricePerUnit': 0x81d / 0x3e8, 'sellingUnitValue': 0x1, 'sellingUnit': 'kg', 'sellingPrice': 0x81d, 'source': 'https://prod.danawa.com/info/?pcode=3611100' }, { 'name': '설탕', 'recipeWeight': 0xf, 'pricePerUnit': 0x4d5 / 0x3e8, 'sellingUnitValue': 0xf, 'sellingUnit': 'kg', 'sellingPrice': 0x4880, 'source': 'https://prod.danawa.com/info/?pcode=2102752' }, { 'name': '소금', 'recipeWeight': 0x4, 'pricePerUnit': 0xadc / 0xbb8, 'sellingUnitValue': 0x3, 'sellingUnit': 'kg', 'sellingPrice': 0xadc, 'source': _0x4172db(0x151) }, { 'name': _0x4172db(0x18a), 'recipeWeight': 0x4, 'pricePerUnit': 5.98, 'sellingUnitValue': 0x1f4, 'sellingUnit': 'g', 'sellingPrice': 0xbae, 'source': 'https://prod.danawa.com/info/?pcode=58670702' }, { 'name': '따듯한\x20우유', 'recipeWeight': 0x1e, 'pricePerUnit': 0x76c / 0x3e8, 'sellingUnitValue': 0x1, 'sellingUnit': 'L', 'sellingPrice': 0x76c, 'source': 'https://prod.danawa.com/info/?pcode=1008149' }, { 'name': _0x4172db(0x175), 'recipeWeight': 0x5a, 'pricePerUnit': 0.001, 'sellingUnitValue': 0x1, 'sellingUnit': 'L', 'sellingPrice': 0x1, 'source': '' }, { 'name': '실온\x20버터', 'recipeWeight': 0xc, 'pricePerUnit': 14.64, 'sellingUnitValue': 0x1c6, 'sellingUnit': 'g', 'sellingPrice': 0x19fa, 'source': _0x4172db(0x18d) }, { 'name': _0x4172db(0x185), 'recipeWeight': 0x1e, 'pricePerUnit': 0x18c4 / 0xf0, 'sellingUnitValue': 0xf0, 'sellingUnit': 'g', 'sellingPrice': 0x18c4, 'source': _0x4172db(0x15b) }]; function _0x220c() { const _0x201514 = ['waterBill', '18400063HlBDFw', '2AXKhVm', 'values', 'innerText', 'innerHTML', '재료비', 'getElementById', 'unitelectricitybill', 'name', '</td>', '487158dAhRUn', '가염\x20버터', '수도요금', 'quantity', 'toFixed', '1516659fDvoTO', '이스트', 'appendChild', 'https://prod.danawa.com/info/?pcode=13073432', 'https://prod.danawa.com/info/?pcode=9519135', '밀가루박력분', 'value', '밀가루강력분', '3373736OZrSnv', 'pricePerUnit', 'ko-KR', '<a\x20href=\x22', 'label', 'laborCost', 'getRowData', '</td>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<td\x20style=\x22text-align:\x20right;\x22><input\x20type=\x22number\x22\x20id=\x22userAmount-', 'recipeWeight', '</td>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<td\x20style=\x22text-align:\x20right;\x22>', 'https://prod.danawa.com/info/?pcode=3602235', '카드수수료', 'ingredientTable', 'createElement', 'length', '</td>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<td\x20style=\x22text-align:\x20center;\x22>', 'electricityBill', 'map', '561487ahGqEd', '5ClJxNE', 'https://prod.danawa.com/info/?pcode=18155252', '\x22\x20target=\x22_blank\x22>이동</a>', 'getFixedCost', '<td\x20style=\x22text-align:\x20right;\x22></td>', '인건비', 'source', 'cardfee', '438332vTeYZK', 'toLocaleString', 'sellingUnit', 'unitprice', '\x22\x20onchange=\x22updateUserCost(', ')\x22></td>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<td\x20style=\x22text-align:\x20right;\x22\x20id=\x22userCost-', 'userCostPerItem', 'laborcost', 'maximumFractionDigits', '12mVjmhf', '전기요금', 'childNodes', '<td\x20style=\x22text-align:\x20right;\x22>', '<td\x20style=\x22text-align:\x20left;\x22>', 'unitwaterbill', 'sellingPrice', 'table:nth-of-type(3)\x20tbody', '1269020qXmJPT', 'unitmaterial', '따듯한\x20물', '</td>\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20', '9oTfibL', 'userCost-']; _0x220c = function () { return _0x201514; }; return _0x220c(); } function populateIngredientTable() { const _0x4f8f8b = _0x4172db, _0x4162b4 = document['getElementById'](_0x4f8f8b(0x153)); totalMaterialCost = 0x0, ingredients['forEach']((_0x34f45e, _0xcebeae) => { const _0x59d350 = _0x4f8f8b, _0x26f2b9 = _0x34f45e[_0x59d350(0x199)] * _0x34f45e[_0x59d350(0x192)]; totalMaterialCost += _0x26f2b9; const _0x5a5760 = document[_0x59d350(0x154)]('tr'); _0x5a5760['innerHTML'] = '\x0a\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20\x20<td\x20style=\x22text-align:\x20left;\x22>' + _0x34f45e[_0x59d350(0x182)] + _0x59d350(0x156) + (_0x34f45e[_0x59d350(0x160)] ? _0x59d350(0x194) + _0x34f45e[_0x59d350(0x160)] + _0x59d350(0x15c) : '') + _0x59d350(0x150) + _0x34f45e['sellingUnitValue'] + _0x59d350(0x150) + _0x34f45e[_0x59d350(0x164)] + _0x59d350(0x150) + _0x34f45e[_0x59d350(0x171)][_0x59d350(0x163)]() + _0x59d350(0x150) + _0x34f45e[_0x59d350(0x192)]['toFixed'](numberFormatOptions['maximumFractionDigits']) + _0x59d350(0x198) + _0xcebeae + '\x22\x20value=\x22' + _0x34f45e['recipeWeight'] + _0x59d350(0x166) + _0xcebeae + _0x59d350(0x167) + _0xcebeae + '\x22>' + _0x26f2b9[_0x59d350(0x188)](numberFormatOptions[_0x59d350(0x16a)]) + _0x59d350(0x176), _0x4162b4[_0x59d350(0x18b)](_0x5a5760); }), updateUserTotalCost(), updateUnitPrice(); } function updateUserCost(_0x460115) { const _0x3cdab0 = _0x4172db, _0x1b9dae = parseFloat(document[_0x3cdab0(0x180)]('userAmount-' + _0x460115)['value']) || 0x0, _0x2079ab = ingredients[_0x460115][_0x3cdab0(0x192)], _0x31c2a0 = _0x1b9dae * _0x2079ab; document[_0x3cdab0(0x180)]('userCost-' + _0x460115)[_0x3cdab0(0x17d)] = _0x31c2a0[_0x3cdab0(0x188)](numberFormatOptions[_0x3cdab0(0x16a)]), updateUserTotalCost(); } function updateUserTotalCost() { const _0x250feb = _0x4172db; let _0x3f3b6f = 0x0; ingredients['forEach']((_0x5e9709, _0x355981) => { const _0x58d115 = _0x26f1, _0x5914bb = parseFloat(document['getElementById'](_0x58d115(0x178) + _0x355981)[_0x58d115(0x17d)]) || 0x0; _0x3f3b6f += _0x5914bb; }), document[_0x250feb(0x180)]('userTotalCost')[_0x250feb(0x17d)] = _0x3f3b6f[_0x250feb(0x188)](numberFormatOptions['maximumFractionDigits']), document[_0x250feb(0x180)](_0x250feb(0x168))['innerText'] = (_0x3f3b6f / PIECES)[_0x250feb(0x188)](numberFormatOptions[_0x250feb(0x16a)]); } function updateUnitPrice() { const _0x3bb1eb = _0x4172db, _0x236024 = parseInt(document['getElementById'](_0x3bb1eb(0x187))['value']) || 0x0, _0x14f1c0 = parseFloat(document['getElementById'](_0x3bb1eb(0x165))[_0x3bb1eb(0x18f)]) || 0x0, _0x5ea45d = parseFloat(document[_0x3bb1eb(0x180)](_0x3bb1eb(0x168))[_0x3bb1eb(0x17d)]) || 0x0, _0x1ead2a = parseFloat(document[_0x3bb1eb(0x180)](_0x3bb1eb(0x169))[_0x3bb1eb(0x18f)]) / 0x8 || 0x0, _0x430206 = parseFloat(document[_0x3bb1eb(0x180)]('unitmonthlyrent')[_0x3bb1eb(0x18f)]) / 0x1e / 0x8 || 0x0, _0x2d3200 = parseFloat(document['getElementById'](_0x3bb1eb(0x181))[_0x3bb1eb(0x18f)]) / 0x1e / 0x8 || 0x0, _0x57bd3b = parseFloat(document[_0x3bb1eb(0x180)](_0x3bb1eb(0x170))['value']) / 0x1e / 0x8 || 0x0, _0x53e18f = parseFloat(document['getElementById'](_0x3bb1eb(0x161))[_0x3bb1eb(0x18f)]) / 0x64 || 0x0, _0x244eb2 = new CostCalculator(_0x236024, _0x14f1c0, _0x5ea45d, _0x1ead2a, _0x430206, _0x2d3200, _0x57bd3b, _0x53e18f), _0x49cc7d = _0x244eb2[_0x3bb1eb(0x197)](), _0x36490a = document['querySelector'](_0x3bb1eb(0x172)); _0x36490a['innerHTML'] = ''; for (let _0x31bed5 = 0x0; _0x31bed5 < _0x49cc7d[_0x3bb1eb(0x155)]; _0x31bed5++) { const _0x341565 = document[_0x3bb1eb(0x154)]('tr'); _0x341565[_0x3bb1eb(0x17e)] = _0x3bb1eb(0x16f) + _0x49cc7d[_0x31bed5][_0x3bb1eb(0x195)] + _0x3bb1eb(0x183), _0x341565['innerHTML'] += _0x3bb1eb(0x15e), _0x341565[_0x3bb1eb(0x17e)] += _0x3bb1eb(0x15e), _0x341565[_0x3bb1eb(0x17e)] += _0x3bb1eb(0x16e) + (_0x49cc7d[_0x31bed5]['values'][0x0] / _0x236024)[_0x3bb1eb(0x163)](_0x3bb1eb(0x193), numberFormatOptions) + _0x3bb1eb(0x183); for (let _0x3cfd0e = 0x0; _0x3cfd0e < 0x5; _0x3cfd0e++) { _0x341565[_0x3bb1eb(0x17e)] += _0x3bb1eb(0x16e) + _0x49cc7d[_0x31bed5]['values'][_0x3cfd0e][_0x3bb1eb(0x163)](_0x3bb1eb(0x193), numberFormatOptions) + _0x3bb1eb(0x183); } _0x36490a[_0x3bb1eb(0x18b)](_0x341565); } _0x36490a[_0x3bb1eb(0x16d)][0x1]['childNodes'][0x1]['innerText'] = (_0x49cc7d[0x1][_0x3bb1eb(0x17c)][0x0] / _0x49cc7d[0x6][_0x3bb1eb(0x17c)][0x0] * 0x64)[_0x3bb1eb(0x188)](0x2) + '%', _0x36490a['childNodes'][0x2][_0x3bb1eb(0x16d)][0x1][_0x3bb1eb(0x17d)] = (_0x49cc7d[0x2][_0x3bb1eb(0x17c)][0x0] / _0x49cc7d[0x6][_0x3bb1eb(0x17c)][0x0] * 0x64)[_0x3bb1eb(0x188)](0x2) + '%', _0x36490a[_0x3bb1eb(0x16d)][0x3][_0x3bb1eb(0x16d)][0x1][_0x3bb1eb(0x17d)] = (_0x49cc7d[0x3][_0x3bb1eb(0x17c)][0x0] / _0x49cc7d[0x6][_0x3bb1eb(0x17c)][0x0] * 0x64)[_0x3bb1eb(0x188)](0x2) + '%', _0x36490a[_0x3bb1eb(0x16d)][0x4]['childNodes'][0x1]['innerText'] = (_0x49cc7d[0x4][_0x3bb1eb(0x17c)][0x0] / _0x49cc7d[0x6][_0x3bb1eb(0x17c)][0x0] * 0x64)[_0x3bb1eb(0x188)](0x2) + '%', _0x36490a['childNodes'][0x5][_0x3bb1eb(0x16d)][0x1][_0x3bb1eb(0x17d)] = (_0x49cc7d[0x5][_0x3bb1eb(0x17c)][0x0] / _0x49cc7d[0x6][_0x3bb1eb(0x17c)][0x0] * 0x64)[_0x3bb1eb(0x188)](0x2) + '%', _0x36490a[_0x3bb1eb(0x16d)][0x1][_0x3bb1eb(0x16d)][0x2]['innerText'] = (_0x49cc7d[0x1][_0x3bb1eb(0x17c)][0x0] / _0x49cc7d[0x8]['values'][0x0] * 0x64)[_0x3bb1eb(0x188)](0x2) + '%', _0x36490a['childNodes'][0x2][_0x3bb1eb(0x16d)][0x2][_0x3bb1eb(0x17d)] = (_0x49cc7d[0x2][_0x3bb1eb(0x17c)][0x0] / _0x49cc7d[0x8][_0x3bb1eb(0x17c)][0x0] * 0x64)[_0x3bb1eb(0x188)](0x2) + '%', _0x36490a['childNodes'][0x3][_0x3bb1eb(0x16d)][0x2][_0x3bb1eb(0x17d)] = (_0x49cc7d[0x3][_0x3bb1eb(0x17c)][0x0] / _0x49cc7d[0x8][_0x3bb1eb(0x17c)][0x0] * 0x64)[_0x3bb1eb(0x188)](0x2) + '%', _0x36490a[_0x3bb1eb(0x16d)][0x4][_0x3bb1eb(0x16d)][0x2][_0x3bb1eb(0x17d)] = (_0x49cc7d[0x4]['values'][0x0] / _0x49cc7d[0x8][_0x3bb1eb(0x17c)][0x0] * 0x64)['toFixed'](0x2) + '%', _0x36490a[_0x3bb1eb(0x16d)][0x5][_0x3bb1eb(0x16d)][0x2][_0x3bb1eb(0x17d)] = (_0x49cc7d[0x5][_0x3bb1eb(0x17c)][0x0] / _0x49cc7d[0x8]['values'][0x0] * 0x64)[_0x3bb1eb(0x188)](0x2) + '%', _0x36490a[_0x3bb1eb(0x16d)][0x7][_0x3bb1eb(0x16d)][0x2][_0x3bb1eb(0x17d)] = (_0x49cc7d[0x7][_0x3bb1eb(0x17c)][0x0] / _0x49cc7d[0x8]['values'][0x0] * 0x64)[_0x3bb1eb(0x188)](0x2) + '%'; } populateIngredientTable();
+    </script>
+</body>
+
+</html>
